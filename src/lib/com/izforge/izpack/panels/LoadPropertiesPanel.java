@@ -52,6 +52,7 @@ public class LoadPropertiesPanel extends IzPanel
     public LoadPropertiesPanel(InstallerFrame parent, InstallData idata)
     {
         super(parent, idata);
+        setHidden(true);
     }
 
     /**
