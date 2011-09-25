@@ -1,15 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
-    <groupId>org.codehaus.izpack</groupId>
-    <artifactId>izpack-parent</artifactId>
-    <version>2</version>
+    <groupId>org.codehaus</groupId>
+    <artifactId>codehaus-parent</artifactId>
+    <version>3</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   
+  <groupId>org.codehaus.izpack</groupId>
   <artifactId>izpack-standalone-compiler</artifactId>
-  <version>4.3.4-SNAPSHOT</version>
+  <version>4.3.5-SNAPSHOT</version>
   
   <name>IzPack Standalone Compiler</name>
 
@@ -40,6 +41,7 @@
       <!-- copy the real standlone-compiler to this project and overwrite the implicit jar already built by the jar packaging -->
       <plugin>
          <artifactId>maven-antrun-plugin</artifactId>
+         <version>1.6</version>
          <executions>
            <execution>
              <id>build-izpack-with-ant</id>
@@ -48,9 +50,12 @@
              </goals>
              <phase>package</phase>
              <configuration>
-               <tasks>
-                  <exec executable="${env.ANT_HOME}/bin/ant${antExeExt}" dir="${basedir}/src"/>
-               </tasks>
+               <target>
+                  <exec executable="${env.ANT_HOME}/bin/ant${antExeExt}" dir="${basedir}/src">
+                    <arg value="-Ddebug=true" />
+                  </exec>
+                  <jar destfile="${project.build.directory}/${project.build.finalName}-sources.jar" basedir="${project.basedir}/src/lib"/>
+               </target>
              </configuration>
            </execution>
            
@@ -73,17 +78,6 @@
        </plugin>
        
       <plugin>
-         <artifactId>maven-source-plugin</artifactId>
-         <executions>
-           <execution>
-             <id>build-izpack-source</id>
-             <goals><goal>jar</goal></goals>
-             <phase>package</phase>
-           </execution>
-         </executions>
-       </plugin>
-       
-      <plugin>
          <groupId>org.codehaus.mojo</groupId>
          <artifactId>build-helper-maven-plugin</artifactId>
          <version>1.2</version>
@@ -96,6 +90,10 @@
                <artifacts>
                  <artifact>
                    <file>${basedir}/lib/standalone-compiler.jar</file>
+                 </artifact>
+                 <artifact>
+                   <file>${project.build.directory}/${project.build.finalName}-sources.jar</file>
+                   <classifier>sources</classifier>
                  </artifact>
                </artifacts>
              </configuration>
